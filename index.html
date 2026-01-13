@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการรายรับ-รายจ่าย</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 text-gray-700">
+
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div id="app-lock-screen" class="fixed inset-0 bg-gradient-to-br from-purple-900 to-indigo-900 z-[70] flex flex-col items-center justify-center p-4 hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md text-center transform transition-all scale-100">
+                <div class="mb-6">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa-solid fa-lock text-4xl text-purple-600"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">กรุณาใส่รหัสผ่าน</h2>
+                    <p class="text-gray-500 mt-2">เพื่อเข้าใช้งานระบบจัดการรายรับ-รายจ่าย</p>
+                </div>
+                
+                <form id="unlock-form" class="space-y-4">
+                    <div class="relative">
+                        <input type="password" id="unlock-password" placeholder="รหัสผ่าน" class="w-full text-center text-2xl tracking-widest py-3 px-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 outline-none transition-all" required
+						autocapitalize="off" 
+						autocomplete="off" 
+						autocorrect="off" 
+						spellcheck="false">
+                    </div>
+                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition duration-300 text-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-door-open"></i> เข้าสู่ระบบ
+                    </button>
+                </form>
+                <p class="mt-6 text-xs text-gray-400">© 2025 Finance Manager Pro</p>
+            </div>
+        </div>
+
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold text-purple-600">
+                <i class="fa-solid fa-wallet mr-2"></i>
+                <span>ระบบจัดการรายรับ-รายจ่าย</span>
+            </div>
+
+            <div class="md:hidden flex items-center gap-2">
+                <button id="mobile-home-button" class="text-purple-600 hover:text-purple-800 p-2 rounded-lg">
+                    <i class="fa-solid fa-house text-2xl"></i> 
+                </button>
+                <button id="mobile-menu-button" class="text-purple-600 hover:text-purple-800 p-2 rounded-lg">
+                    <i id="mobile-menu-icon" class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+
+            <div id="desktop-menu" class="hidden md:flex md:items-center md:gap-2">
+                <button id="nav-home" class="text-purple-600 hover:text-purple-800 font-medium px-4 py-3 rounded-lg text-lg"><i class="fa-solid fa-house mr-1"></i> หน้าแรก</button>
+                <button id="nav-list" class="text-gray-600 hover:text-purple-800 font-medium px-4 py-3 rounded-lg text-lg"><i class="fa-solid fa-list-ul mr-1"></i> รายการ</button>
+                <button id="nav-calendar" class="text-gray-600 hover:text-purple-800 font-medium px-4 py-3 rounded-lg text-lg"><i class="fa-solid fa-calendar-days mr-1"></i> ปฏิทิน</button>
+                <button id="nav-settings" class="text-gray-600 hover:text-purple-800 font-medium px-4 py-3 rounded-lg text-lg"><i class="fa-solid fa-gear mr-1"></i> ตั้งค่า</button>
+                <button id="nav-guide" class="text-gray-600 hover:text-purple-800 font-medium px-4 py-3 rounded-lg text-lg"><i class="fa-solid fa-book mr-1"></i> คู่มือการใช้งาน</button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+            <button id="nav-home-mobile" class="block w-full text-left text-purple-600 hover:bg-purple-100 font-medium px-6 py-4 text-lg border-b border-gray-100"><i class="fa-solid fa-house mr-2"></i> หน้าแรก</button>
+            <button id="nav-list-mobile" class="block w-full text-left text-gray-600 hover:bg-purple-100 font-medium px-6 py-4 text-lg border-b border-gray-100"><i class="fa-solid fa-list-ul mr-2"></i> รายการ</button>
+            <button id="nav-calendar-mobile" class="block w-full text-left text-gray-600 hover:bg-purple-100 font-medium px-6 py-4 text-lg border-b border-gray-100"><i class="fa-solid fa-calendar-days mr-2"></i> ปฏิทิน</button>
+            <button id="nav-settings-mobile" class="block w-full text-left text-gray-600 hover:bg-purple-100 font-medium px-6 py-4 text-lg border-b border-gray-100"><i class="fa-solid fa-gear mr-2"></i> ตั้งค่า</button>
+            <button id="nav-guide-mobile" class="block w-full text-left text-gray-600 hover:bg-purple-100 font-medium px-6 py-4 text-lg"><i class="fa-solid fa-book mr-2"></i> คู่มือการใช้งาน</button>
+        </div>
+    </nav>
+
+
+    <div id="main-content" class="container mx-auto p-4 md:p-6">
+        <header id="shared-controls-header" class="flex flex-col md:flex-row justify-end items-center mb-6 gap-4" style="display: none;">
+            <div class="flex flex-wrap justify-center md:justify-end items-center gap-3 bg-white p-4 rounded-xl shadow-lg">
+                <select id="view-mode-select" class="form-select text-lg text-gray-700 bg-gray-50 border-0 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+                    <option value="all">ดูทั้งหมด</option>
+                    <option value="month">ดูรายเดือน</option>
+                    <option value="year">ดูรายปี</option>
+                </select>
+                <div id="month-controls" class="flex items-center gap-1">
+                    <button id="month-prev" class="px-4 py-3 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
+                    <input type="month" id="month-picker" class="form-input text-lg text-gray-700 bg-gray-50 border-0 rounded-lg focus:ring-purple-500 focus:border-purple-500 w-auto">
+                    <button id="month-next" class="px-4 py-3 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <div id="year-controls" class="flex items-center gap-1 hidden">
+                    <button id="year-prev" class="px-4 py-3 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
+                    <input type="number" id="year-picker" class="form-input text-lg text-gray-700 bg-gray-50 border-0 rounded-lg focus:ring-purple-500 focus:border-purple-500 w-28 text-center" placeholder="YYYY">
+                    <button id="year-next" class="px-4 py-3 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+        </header>
+        
+        <div id="page-wrapper" class="page-container">
+            <div id="page-home" class="app-page">
+                <div id="summary-cards-container" class="grid grid-cols-3 gap-2 md:gap-6 mb-6">
+                    <div id="summary-income-card" class="bg-green-100 p-3 md:p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition duration-200">
+                        <h2 class="text-sm md:text-lg font-semibold text-green-800 mb-1 md:mb-2">รายรับ</h2>
+                        <p id="total-income" class="text-base md:text-2xl font-bold text-green-700">฿0.00</p>
+                    </div>
+                    <div id="summary-expense-card" class="bg-red-100 p-3 md:p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition duration-200">
+                        <h2 class="text-sm md:text-lg font-semibold text-red-800 mb-1 md:mb-2">รายจ่าย</h2>
+                        <p id="total-expense" class="text-base md:text-2xl font-bold text-red-700">฿0.00</p>
+                    </div>
+                    <div id="summary-balance-card" class="bg-blue-100 p-3 md:p-6 rounded-xl shadow-lg cursor-pointer hover:shadow-xl transition duration-200">
+                        <h2 class="text-sm md:text-lg font-semibold text-blue-800 mb-1 md:mb-2">คงเหลือ(เงินสด/ออมทรัพย์)</h2>
+                        <p id="total-balance" class="text-base md:text-2xl font-bold text-blue-800">฿0.00</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6">
+                    <div class="flex justify-between items-center cursor-pointer settings-toggle-header" data-target="home-accounts-content">
+                        <h2 class="text-xl font-bold text-purple-600">สรุปบัญชีทั้งหมด</h2>
+                        <i class="fa-solid fa-chevron-down text-green-500 transition-transform duration-300 rotate-180"></i>
+                    </div>
+
+                    <div id="home-accounts-content" class="mt-4 transition-all">
+                        <div id="all-accounts-summary" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+                            <p class="text-gray-500">กำลังโหลดบัญชี...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+                    <div class="lg:col-span-1 bg-white p-3 md:p-6 rounded-xl shadow-lg flex flex-col justify-center lg:order-1">
+                        <h2 class="text-lg md:text-xl font-bold text-purple-600 mb-2 md:mb-4">เพิ่มรายการ</h2>
+                        <p class="text-base md:text-lg text-gray-700 mb-4 md:mb-6">ระบบจะจำราคาและหมวดหมู่ให้อัตโนมัติ</p>
+                        <button id="add-tx-btn" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 md:py-3 px-4 rounded-xl shadow-lg transition duration-300 text-base md:text-lg">
+                            <i class="fa-solid fa-plus mr-2"></i> เพิ่มธุรกรรมใหม่
+                        </button>
+                        <button id="voice-add-btn" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 md:py-3 px-4 rounded-xl shadow-lg transition duration-300 text-base md:text-lg mt-3 md:mt-4">
+                            <i class="fa-solid fa-microphone mr-2"></i> เพิ่มด้วยเสียง
+                        </button>
+                    </div>
+                    
+                    <div class="lg:col-span-2 bg-white p-3 md:p-6 rounded-xl shadow-lg lg:order-2">
+                        <h2 class="text-lg md:text-xl font-bold text-purple-600 mb-2 md:mb-4">สรุปภาพรวม</h2>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center">
+                            <div>
+                                <h3 class="text-base md:text-lg font-semibold text-center text-gray-700 mb-2">รายรับ / รายจ่าย</h3>
+                                <div class="h-48 md:h-72 relative">
+                                    <canvas id="transaction-chart"></canvas>
+                                    <p id="chart-no-data" class="absolute inset-0 flex items-center justify-center text-gray-500 hidden">ไม่มีข้อมูล</p>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="text-base md:text-lg font-semibold text-center text-gray-700 mb-2">สรุปรายจ่ายตามรายการ (Top 10)</h3>
+                                <div class="h-48 md:h-72 relative">
+                                    <canvas id="expense-category-chart"></canvas>
+                                    <p id="expense-chart-no-data" class="absolute inset-0 flex items-center justify-center text-gray-500 hidden">ไม่มีข้อมูลรายจ่าย</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="home-transaction-list-container" class="bg-white p-5 md:p-6 rounded-xl shadow-lg mt-6"> 
+                    <div class="flex justify-between items-center cursor-pointer settings-toggle-header" data-target="home-transactions-content">
+                        <h2 class="text-xl font-bold text-purple-600">รายการธุรกรรมล่าสุด</h2>
+                        <i class="fa-solid fa-chevron-down text-green-500 transition-transform duration-300 text-xl"></i>
+                    </div>
+
+                    <div id="home-transactions-content" class="mt-4 transition-all">
+                        <div class="flex flex-col md:flex-row gap-4 mb-4">
+                            <div class="flex-shrink-0">
+                                <select id="home-items-per-page-select" class="form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 py-3 px-4 h-full">
+                                    <option value="10">แสดง 10</option>
+                                    <option value="20">แสดง 20</option>
+                                    <option value="50">แสดง 50</option>
+                                </select>
+                            </div>
+                            <div class="flex-shrink-0 flex gap-2 justify-center md:justify-start" id="home-filter-buttons">
+                                <button class="home-filter-btn bg-purple-500 text-white px-5 py-3 text-base rounded-xl" data-filter="all">ทั้งหมด</button>
+                                <button class="home-filter-btn bg-gray-200 text-gray-700 px-5 py-3 text-base rounded-xl" data-filter="income">รายรับ</button>
+                                <button class="home-filter-btn bg-gray-200 text-gray-700 px-5 py-3 text-base rounded-xl" data-filter="expense">รายจ่าย</button>
+                                <button class="home-filter-btn bg-gray-200 text-gray-700 px-5 py-3 text-base rounded-xl" data-filter="transfer">โอนย้าย</button>
+                            </div>
+                        </div>
+                        <div id="home-table-placeholder" class="overflow-x-auto"></div>
+                        <div id="home-pagination-controls" class="flex justify-center items-center gap-2 mt-4"></div>
+                    </div>
+                </div>
+            </div> 
+        
+            <div id="page-list" class="app-page hidden">
+                <div id="transaction-list-container" class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
+                    <div class="mb-6 border-b pb-6">
+                        <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-2">
+                            <h3 id="list-chart-title" class="text-xl font-bold text-purple-600">สรุปข้อมูล</h3>
+                            <select id="list-chart-selector" class="form-select text-base text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 py-2 px-4">
+                                <option value="items" selected>แยกตามชื่อรายการ (Top 15)</option>
+                                <option value="summary">เปรียบเทียบ รายรับ vs รายจ่าย (ยอดรวม)</option>
+                                <option value="accounts">ยอดเงินคงเหลือแต่ละบัญชี</option>
+                                <option value="trend_month">แนวโน้ม: รายรับ-รายจ่าย รายเดือน</option>
+                                <option value="trend_year">แนวโน้ม: รายรับ-รายจ่าย รายปี</option>
+                            </select>
+                        </div>
+                        <div class="h-80 md:h-96 relative">
+                            <canvas id="list-page-bar-chart"></canvas>
+                            <p id="list-chart-no-data" class="absolute inset-0 flex items-center justify-center text-gray-500 hidden">ไม่มีข้อมูลสำหรับแสดงผล</p>
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-purple-600 mb-4">รายการธุรกรรม</h2>
+                    <div class="flex flex-col md:flex-row gap-4 mb-4">
+                        <div class="relative flex-grow">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <i class="fa-solid fa-search text-gray-400"></i>
+                            </span>
+                            <input type="text" id="search-input" placeholder="ค้นหา ( ชื่อ, หมวดหมู่, บัญชี, จำนวนเงิน, วันเดือนปี )..." class="w-full pl-10 pr-4 py-3 px-4 text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500"> 
+                        </div>
+                        <div class="flex-shrink-0">
+                            <select id="list-group-by-select" class="form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 py-3 px-4 h-full">
+                                <option value="none">ไม่จัดกลุ่ม</option>
+                                <option value="day">จัดกลุ่มรายวัน</option>
+                                <option option value="month">จัดกลุ่มรายเดือน</option>
+                            </select>
+                        </div>
+                        <div class="flex-shrink-0">
+                        <select id="items-per-page-select" class="form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 py-3 px-4 h-full">
+                                <option value="10">แสดง 10</option>
+                                <option value="20">แสดง 20</option>
+                                <option value="50">แสดง 50</option>
+                            </select>
+                        </div>
+                        <div class="flex-shrink-0 flex gap-2 justify-center" id="list-filter-buttons">
+                        <button class="filter-btn bg-purple-500 text-white px-5 py-3 text-base rounded-xl" data-filter="all">ทั้งหมด</button>
+                            <button class="filter-btn bg-gray-200 text-gray-700 px-5 py-3 text-base rounded-xl" data-filter="income">รายรับ</button>
+                            <button class="filter-btn bg-gray-200 text-gray-700 px-5 py-3 text-base rounded-xl" data-filter="expense">รายจ่าย</button>
+                            <button class="filter-btn bg-gray-200 text-gray-700 px-5 py-3 text-base rounded-xl" data-filter="transfer">โอนย้าย</button>
+                        </div>
+                    </div>
+                    <div id="list-table-placeholder" class="overflow-x-auto"></div>
+                    <div id="list-pagination-controls" class="flex justify-center items-center gap-2 mt-4"></div>
+                </div>
+            </div> 
+            
+            <div id="page-calendar" class="app-page hidden">
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
+                    <h1 class="text-xl md:text-2xl font-bold text-purple-600 mb-6">ปฏิทินรายรับ-รายจ่าย</h1>
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+                        <p class="text-lg text-gray-600">คลิกที่วันที่มียอดรวม เพื่อดูรายละเอียด</p>
+                        <div class="flex items-center gap-2 bg-gray-50 p-2 rounded-xl shadow-sm border border-gray-200">
+                            <button id="cal-prev-btn" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-purple-100 hover:text-purple-600 hover:border-purple-300 transition-colors shadow-sm">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <div class="flex items-center">
+                                <label for="cal-year-input" class="mr-2 text-gray-700 font-medium">ปี:</label>
+                                <input type="number" id="cal-year-input" class="form-input w-24 text-center text-lg font-bold text-purple-700 bg-white border border-gray-200 rounded-lg focus:ring-purple-500 focus:border-purple-500 py-1" placeholder="YYYY">
+                            </div>
+                            <button id="cal-next-btn" class="w-10 h-10 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-purple-100 hover:text-purple-600 hover:border-purple-300 transition-colors shadow-sm">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="calendar-container"></div>
+                </div>
+            </div>
+
+            <div id="page-settings" class="app-page hidden">
+                <h1 class="text-xl font-bold text-purple-600 mb-6">ตั้งค่า</h1>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
+                            <div class="flex justify-between items-center cursor-pointer settings-toggle-header" data-target="settings-accounts-content">
+                                <h2 class="text-xl font-bold text-purple-600">จัดการบัญชี</h2>
+                                <i class="fa-solid fa-chevron-down text-green-500 transition-transform duration-300 rotate-180"></i>
+                            </div>
+                            
+                            <div id="settings-accounts-content" class="mt-4 transition-all">
+                                <form id="form-add-account" class="space-y-3 mb-4 p-4 bg-gray-50 rounded-lg">
+                                    <h3 class="text-lg font-semibold text-purple-700">เพิ่มบัญชีใหม่</h3>
+                                    <div>
+                                        <label for="input-account-name" class="block text-sm font-medium text-gray-700">ชื่อบัญชี</label>
+                                        <input type="text" id="input-account-name" placeholder="เช่น เงินเดือน, บัตร KBank" class="mt-1 flex-grow form-input text-lg py-3 px-4 text-gray-700 bg-white border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 w-full" required>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="select-account-type" class="block text-sm font-medium text-gray-700">ประเภทบัญชี</label>
+                                            <select id="select-account-type" class="mt-1 w-full form-select text-lg text-gray-700 bg-white border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required>
+                                                <option value="cash">เงินสด/ออมทรัพย์/วอลเล็ท</option>
+                                                <option value="credit">บัตรเครดิต</option>
+                                                <option value="liability">บัญชีหนี้สิน</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div>
+                                            <label for="input-account-balance" class="block text-sm font-medium text-gray-700">ยอดเริ่มต้น</label>
+                                            <div class="relative mt-1">
+                                                <input type="text" id="input-account-balance" inputmode="decimal" placeholder="0.00 หรือ 50+20" value="0" class="flex-grow form-input text-lg py-3 px-4 text-gray-700 bg-white border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 w-full pr-12" required>
+                                                <button type="button" id="toggle-account-calc-btn" class="absolute inset-y-0 right-0 flex items-center pr-3 text-purple-600 hover:text-purple-800 p-1 rounded-lg">
+                                                    <i class="fa-solid fa-calculator text-xl"></i>
+                                                </button>
+                                                <div id="account-calculator-popover" class="absolute z-20 w-full max-w-xs bg-gray-50 shadow-lg rounded-xl p-3 mt-1 right-0 hidden border border-gray-200">
+                                                    <div id="acc-calc-preview" class="text-right text-purple-600 font-bold text-xl h-6 mb-2 pr-1"> </div>
+                                                    <div id="account-calculator-grid" class="grid grid-cols-4 gap-1">
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="7">7</button> <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="8">8</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="9">9</button>
+                                                        <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="/">/</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="4">4</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="5">5</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="6">6</button>
+                                                        <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="*">*</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="1">1</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="2">2</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="3">3</button>
+                                                        <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="-">-</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="0">0</button>
+                                                        <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value=".">.</button>
+                                                        <button type="button" class="calc-btn bg-red-200 hover:bg-red-300 text-red-800 py-1 rounded-lg font-semibold text-base" data-value="C">C</button>
+                                                        <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="+">+</button>
+                                                        <button type="button" class="calc-btn col-span-4 bg-purple-600 hover:bg-purple-700 text-white py-1 rounded-lg font-semibold text-base" data-value="=">=</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-3 rounded-xl font-medium text-lg"><i class="fa-solid fa-plus mr-2"></i>เพิ่มบัญชี</button>
+                                </form>
+                                <ul id="list-accounts" class="space-y-2"></ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
+                            <div class="flex justify-between items-center cursor-pointer settings-toggle-header" data-target="settings-income-content">
+                                <h2 class="text-xl font-bold text-purple-600">หมวดหมู่รายรับ</h2>
+                                <i class="fa-solid fa-chevron-down text-green-500 transition-transform duration-300 rotate-180"></i>
+                            </div>
+                            <div id="settings-income-content" class="mt-4 transition-all">
+                                <form id="form-add-income-cat" class="flex gap-2 mb-3">
+                                    <input type="text" id="input-income-cat" placeholder="เพิ่มหมวดหมู่รายรับ" class="flex-grow form-input text-lg py-3 px-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500"> 
+                                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-medium text-lg"><i class="fa-solid fa-plus"></i></button> 
+                                </form>
+                                <ul id="list-income-cat" class="space-y-2"></ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
+                            <div class="flex justify-between items-center cursor-pointer settings-toggle-header" data-target="settings-expense-content">
+                                <h2 class="text-xl font-bold text-purple-600">หมวดหมู่รายจ่าย</h2>
+                                <i class="fa-solid fa-chevron-down text-green-500 transition-transform duration-300 rotate-180"></i>
+                            </div>
+                            <div id="settings-expense-content" class="mt-4 transition-all">
+                                <form id="form-add-expense-cat" class="flex gap-2 mb-3">
+                                    <input type="text" id="input-expense-cat" placeholder="เพิ่มหมวดหมู่รายจ่าย" class="flex-grow form-input text-lg py-3 px-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500"> 
+                                    <button type="submit" class="bg-red-500 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-medium text-lg"><i class="fa-solid fa-plus"></i></button> 
+                                </form>
+                                <ul id="list-expense-cat" class="space-y-2"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-6">
+                        <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
+                            <div class="flex justify-between items-center cursor-pointer settings-toggle-header" data-target="settings-manual-content">
+                                <h2 class="text-xl font-bold text-purple-600">รายการที่บันทึกไว้ (Manual)</h2>
+                                <i class="fa-solid fa-chevron-down text-green-500 transition-transform duration-300 rotate-180"></i>
+                            </div>
+                            <div id="settings-manual-content" class="mt-4 transition-all">
+                                <form id="form-add-frequent-item" class="flex gap-2 mb-3">
+                                    <input type="text" id="input-frequent-item" placeholder="เพิ่มชื่อรายการ" class="flex-grow form-input text-lg py-3 px-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500"> 
+                                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl font-medium text-lg"><i class="fa-solid fa-plus"></i></button> 
+                                </form>
+                                <ul id="list-frequent-item" class="space-y-2"></ul>
+                                <p class="text-sm text-gray-500 mt-2">* ระบบ Auto-Learn จะทำงานแยกต่างหากและไม่แสดงในหน้านี้</p>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mt-0">
+                            <h2 class="text-xl font-bold text-purple-600 mb-4">ตั้งค่าทั่วไป</h2>
+                            								<div class="flex items-center justify-between mt-5"> <div class="flex items-center gap-3">
+										<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+											<i class="fa-solid fa-wand-magic-sparkles"></i>
+										</div>
+										<span class="text-lg text-gray-700 font-medium">ยืนยันรหัสผ่านอัตโนมัติ</span>
+									</div>
+									
+									<label class="relative inline-flex items-center cursor-pointer">
+										<input type="checkbox" id="toggle-auto-confirm-password" class="sr-only peer">
+										<div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-purple-600"></div>
+									</label>
+								</div>
+								<p class="text-sm text-gray-500 mt-2 ml-14">ตรวจสอบและยืนยันทันทีเมื่อพิมพ์รหัสผ่านถูกต้อง</p>
+                            <div class="mb-5 border-b pb-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                            <i class="fa-solid fa-user-lock"></i>
+                                        </div>
+                                        <span class="text-lg text-gray-700 font-medium">ตั้งค่า Auto Lock</span>
+                                    </div>
+                                    
+                                    <select id="auto-lock-select" class="form-select text-base text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 py-2 px-3">
+                                        <option value="0">ปิด</option>
+										<option value="1">1 นาที</option>
+                                        <option value="5">5 นาที</option>
+                                        <option value="10">10 นาที</option>
+                                        <option value="30">30 นาที</option>
+                                        <option value="60">60 นาที</option>
+                                    </select>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2 ml-14">ล็อกหน้าจออัตโนมัติเมื่อไม่มีกิจกรรม (ใช้ได้เมื่อตั้งรหัสผ่าน)</p>
+                            </div>
+
+                            <div class="mb-5 border-b pb-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                            <i class="fa-solid fa-moon"></i>
+                                        </div>
+                                        <span class="text-lg text-gray-700 font-medium">Dark Mode</span>
+                                    </div>
+                                    
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="toggle-dark-mode" class="sr-only peer">
+                                        <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2 ml-14">เปลี่ยนธีมเป็นสีดำสนิทเพื่อถนอมสายตา</p>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </div>
+                                    <span class="text-lg text-gray-700 font-medium">แสดงยอดคงเหลือรวม (หน้าแรก)</span>
+                                </div>
+                                
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" id="toggle-show-balance" class="sr-only peer">
+                                    <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-purple-600"></div>
+                                </label>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2 ml-14">หากปิด ยอดคงเหลือสุทธิจะถูกซ่อนจากหน้าแรก</p>
+                        </div>
+                        
+                        <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
+                            <h2 class="text-xl font-bold text-purple-600 mb-4">จัดการข้อมูล</h2>
+                            <button id="btn-manage-password" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition duration-300 mb-4 text-lg"> <i class="fa-solid fa-key mr-2"></i> จัดการรหัสผ่าน
+                            </button>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <button id="btn-undo" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-lg"> <i class="fa-solid fa-rotate-left mr-2"></i> ย้อนกลับ
+                            </button>
+                            <button id="btn-redo" class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-lg"> <i class="fa-solid fa-rotate-right mr-2"></i> ทำซ้ำ
+                                </button>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <button id="btn-backup" class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition duration-300 text-lg"> <i class="fa-solid fa-upload mr-2"></i> สำรองข้อมูล
+                            </button>
+                                <button id="btn-import" class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition duration-300 text-lg"> <i class="fa-solid fa-download mr-2"></i> นำเข้าข้อมูล
+                                </button>
+                            <input type="file" id="import-file-input" class="hidden" accept=".json">
+                                <button id="btn-export-csv" class="col-span-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition duration-300 text-lg"> 
+                                    <i class="fa-solid fa-file-csv mr-2"></i> ส่งออกเป็น CSV (Excel)
+                                </button>
+                                <button id="btn-clear-all" class="col-span-2 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition duration-300 text-lg"> <i class="fa-solid fa-trash-alt mr-2"></i> รีเซ็ตและล้างข้อมูลทั้งหมด
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <div id="page-guide" class="app-page hidden">
+                <h1 class="text-3xl font-bold text-purple-600 mb-6">คู่มือการใช้งาน (ฉบับสมบูรณ์)</h1>
+                
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6 border-l-4 border-purple-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-rocket text-purple-600 mr-3"></i> 1. เริ่มต้นใช้งาน & หน้าแรก
+                    </h2>
+                    <div class="space-y-3 text-gray-600 text-lg">
+                        <p>หน้าแรกคือแผงควบคุมหลักของคุณ ประกอบด้วย:</p>
+                        <ul class="list-disc list-inside ml-2 space-y-2">
+                            <li><b>การ์ดสรุปยอด:</b> แสดงรายรับ, รายจ่าย และ <span class="text-blue-600 font-bold">ยอดคงเหลือสุทธิ</span> (คำนวณจากเงินสด + เงินในบัญชีทั้งหมด)</li>
+                            <li><b>กราฟวงกลม:</b> เปรียบเทียบสัดส่วนรายรับ vs รายจ่าย</li>
+                            <li><b>Top 10 รายจ่าย:</b> แสดงให้เห็นว่าคุณหมดเงินไปกับอะไรมากที่สุด</li>
+                            <li class="text-purple-700 bg-purple-50 p-2 rounded-lg border border-purple-100"><i class="fa-solid fa-star mr-2"></i><b>ใหม่! การเปลี่ยนมุมมอง:</b> ที่มุมขวาบน คุณสามารถเปลี่ยนโหมดเป็น "รายเดือน", "รายปี" หรือ "ดูทั้งหมด" เพื่อดูภาพรวมข้อมูลในช่วงเวลาต่างๆ ได้</li>
+                            <li class="text-purple-700 bg-purple-50 p-2 rounded-lg border border-purple-100"><i class="fa-solid fa-eye-slash mr-2"></i><b>ใหม่! ซ่อนยอดเงิน:</b> หากต้องการความเป็นส่วนตัว สามารถไปที่เมนู "ตั้งค่า" เพื่อปิดการแสดง "ยอดคงเหลือรวม" ในหน้าแรกได้</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6 border-l-4 border-green-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-circle-plus text-green-600 mr-3"></i> 2. การบันทึกรายการ (3 รูปแบบ)
+                    </h2>
+                    <div class="space-y-4 text-gray-600 text-lg">
+                        <div class="bg-green-50 p-3 rounded-lg">
+                            <h3 class="font-bold text-green-700">🟢 รายรับ (Income)</h3>
+                            <p>ใช้เมื่อได้เงินเข้ามา ทำให้ยอดเงินในบัญชีเพิ่มขึ้น</p>
+                            <p class="text-sm text-gray-500 mt-1"><i>ตัวอย่าง: เงินเดือนออก, ขายของได้, ได้เงินคืน, ดอกเบี้ยธนาคาร</i></p>
+                        </div>
+                        <div class="bg-red-50 p-3 rounded-lg">
+                            <h3 class="font-bold text-red-700">🔴 รายจ่าย (Expense)</h3>
+                            <p>ใช้เมื่อเสียเงินออกไป ทำให้ยอดเงินลดลง หรือหนี้เพิ่มขึ้น</p>
+                            <p class="text-sm text-gray-500 mt-1"><i>ตัวอย่าง: ซื้อข้าวกะเพรา, จ่ายค่าไฟ, รูดบัตรเครดิตซื้อของ</i></p>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg">
+                            <h3 class="font-bold text-blue-700">🔵 โอนย้าย (Transfer)</h3>
+                            <p>ใช้เมื่อย้ายเงินจากที่หนึ่ง ไปอีกที่หนึ่ง (ทรัพย์สินเท่าเดิม)</p>
+                            <p class="text-sm text-gray-500 mt-1"><i>ตัวอย่าง: ถอนเงินสดจากตู้ (บัญชีธนาคาร -> กระเป๋าตังค์), จ่ายหนี้บัตรเครดิต (บัญชีออมทรัพย์ -> บัตรเครดิต)</i></p>
+                        </div>
+                        <div class="border-t pt-3 mt-2">
+                            <p class="font-bold text-gray-700"><i class="fa-solid fa-calculator mr-2"></i>ฟีเจอร์เสริมในหน้าบันทึก:</p>
+                            <ul class="list-disc list-inside ml-2 mt-1 text-sm">
+                                <li><b>เครื่องคิดเลขในตัว:</b> ในช่องใส่จำนวนเงิน กดปุ่มไอคอนเครื่องคิดเลขด้านขวา เพื่อคำนวณยอดเงินก่อนบันทึกได้ทันที (เช่น 50+20+10)</li>
+                                <li><b>การแก้ไข/ลบ:</b> สามารถกดที่รายการในหน้าแรกหรือหน้ารายการ เพื่อแก้ไขหรือลบข้อมูลได้ (ต้องใส่รหัสผ่านหากตั้งค่าไว้)</li>
+                                <li><i class="fa-solid fa-receipt mr-1 text-purple-600"></i><b>ใหม่! แนบใบเสร็จ:</b> คุณสามารถแนบรูปภาพใบเสร็จเข้ากับรายการได้ โดยจำกัดขนาดไฟล์ไม่เกิน 1 MB</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6 border-l-4 border-blue-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-wallet text-blue-600 mr-3"></i> 3. ระบบบัญชี (Accounts)
+                    </h2>
+                    <p class="text-gray-600 mb-3 text-lg">คุณสามารถเพิ่ม/แก้ไขบัญชีได้ที่เมนู <b>"ตั้งค่า"</b> โดยแบ่งเป็น 3 ประเภท:</p>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-money-bill text-green-500 mt-1 mr-3"></i>
+                            <div>
+                                <span class="font-bold text-gray-700">1.เงินสด/ออมทรัพย์</span>
+                                <p class="text-gray-500 text-sm">คือเงินที่เรามีอยู่จริง ยิ่งเยอะยิ่งดี (ค่าเป็นบวก)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-credit-card text-red-500 mt-1 mr-3"></i>
+                            <div>
+                                <span class="font-bold text-gray-700">2.บัตรเครดิต</span>
+                                <p class="text-gray-500 text-sm">คือวงเงินที่ยืมเขามาใช้ก่อน (ค่าเริ่มที่ 0 และจะติดลบเมื่อใช้จ่าย)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <i class="fa-solid fa-file-invoice-dollar text-orange-500 mt-1 mr-3"></i>
+                            <div>
+                                <span class="font-bold text-gray-700">3.บัญชีหนี้สิน</span>
+                                <p class="text-gray-500 text-sm">เช่น หนี้ กยศ., หนี้บ้าน (ค่าควรตั้งต้นเป็นติดลบตามยอดหนี้)</p>
+                            </div>
+                        </div>
+                        <div class="bg-blue-50 p-3 rounded-lg mt-2">
+                            <h3 class="font-bold text-blue-700 text-sm mb-1"><i class="fa-solid fa-lightbulb mr-1"></i> เคล็ดลับการจัดการบัญชี:</h3>
+                            <ul class="list-disc list-inside text-sm text-gray-600">
+                                <li><b>ดูประวัติบัญชี:</b> ในหน้าแรก (ส่วนสรุปบัญชีทั้งหมด) คุณสามารถคลิกที่การ์ดบัญชีใดก็ได้ เพื่อดูประวัติรายรับ-รายจ่ายของบัญชีนั้นโดยเฉพาะ</li>
+                                <li><b>จัดเรียงลำดับ:</b> ในหน้าตั้งค่า คุณสามารถกดลูกศร ขึ้น/ลง เพื่อจัดเรียงลำดับการแสดงผลของบัญชีตามความสำคัญได้</li>
+                                <li><i class="fa-solid fa-paint-brush mr-1 text-purple-600"></i><b>ใหม่! ไอคอน:</b> คุณสามารถเปลี่ยนไอคอนของแต่ละบัญชีได้ที่หน้าตั้งค่า</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6 border-l-4 border-yellow-400">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-wand-magic-sparkles text-yellow-500 mr-3"></i> 4. ฟีเจอร์อัจฉริยะ (Smart Features)
+                    </h2>
+                    <div class="space-y-4 text-gray-600 text-lg">
+                        <div>
+                            <h3 class="font-semibold text-purple-600"><i class="fa-solid fa-brain mr-2"></i> Auto-Learn (จำอัตโนมัติ)</h3>
+                            <p class="pl-6">เมื่อคุณบันทึกรายการ เช่น "ข้าวมันไก่ 50 บาท" ในหมวด "อาหาร" ระบบจะจำไว้ ครั้งหน้าแค่พิมพ์ "ข้า..." ระบบจะเติมราคาและหมวดหมู่ให้ทันที</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-blue-600"><i class="fa-solid fa-microphone mr-2"></i> สั่งงานด้วยเสียง</h3>
+                            <p class="pl-6">กดปุ่มไมโครโฟนแล้วพูดได้เลย ระบบจะวิเคราะห์คำพูดเพื่อแยกชื่อรายการ ราคา และหมวดหมู่ให้ เช่น:</p>
+                            <ul class="list-disc list-inside pl-8 text-sm italic text-gray-500 mt-1">
+                                <li>"จ่ายค่ากาแฟ 60 บาท" (ระบบลงเป็นรายจ่าย หมวดเครื่องดื่ม)</li>
+                                <li>"ได้เงินเดือน 20000 บาท" (ระบบลงเป็นรายรับ หมวดเงินเดือน)</li>
+                                <li>"กินหมูกระทะ 300 บาท" (ระบบลงเป็นรายจ่าย หมวดอาหาร)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6 border-l-4 border-gray-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-database text-gray-600 mr-3"></i> 5. การจัดการข้อมูล & ความปลอดภัย
+                    </h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 text-lg">
+                        <li><b>รหัสผ่าน:</b> ตั้งค่ารหัสผ่านเพื่อป้องกันการแก้ไขหรือลบข้อมูลโดยไม่ตั้งใจ (ค่าเริ่มต้น: 1234) สามารถเปลี่ยนหรือลบออกได้ในหน้าตั้งค่า</li>
+                        <li><b>สำรองข้อมูล (Backup):</b> ดาวน์โหลดไฟล์ .json เก็บไว้ในเครื่อง เพื่อกันข้อมูลหาย ควรทำสม่ำเสมอ</li>
+                        <li><b>นำเข้าข้อมูล (Import):</b> นำไฟล์ .json ที่เคยสำรองไว้กลับมาใช้ หรือย้ายข้อมูลข้ามเครื่อง</li>
+                        <li><i class="fa-solid fa-file-csv mr-1 text-indigo-600"></i><b>ใหม่! ส่งออก CSV:</b> สามารถส่งออกรายการธุรกรรมเป็นไฟล์ CSV เพื่อนำไปเปิดใน Excel ได้</li>
+                        <li><b>ย้อนกลับ (Undo):</b> หากเผลอลบหรือแก้ไขผิด กดปุ่มนี้เพื่อยกเลิกการกระทำล่าสุดได้ทันที</li>
+						<li><b>ทำซ้ำ (Redo):</b> ทำซ้ำการกระทำที่เพิ่งกดย้อนกลับไป</li>
+                        <li><b>รีเซ็ตและล้างข้อมูลทั้งหมด:</b> ลบข้อมูลทุกอย่างเพื่อเริ่มต้นใหม่ (ควร Backup ก่อนทำ)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6 border-l-4 border-indigo-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-calendar-days text-indigo-600 mr-3"></i> 6. การใช้งานปฏิทิน (Calendar)
+                    </h2>
+                    <div class="space-y-3 text-gray-600 text-lg">
+                        <p>หน้าปฏิทินช่วยให้คุณเห็นภาพรวมการใช้จ่ายในแต่ละวัน:</p>
+                        <ul class="list-disc list-inside ml-2 space-y-2">
+                            <li><b>จุดสีบนปฏิทิน:</b>
+                                <span class="text-green-600 font-bold mx-1">เขียว</span>=รายรับ, 
+                                <span class="text-red-600 font-bold mx-1">แดง</span>=รายจ่าย, 
+                                <span class="text-blue-600 font-bold mx-1">ฟ้า</span>=การโอน
+                            </li>
+                            <li><b>ดูรายละเอียดรายวัน:</b> คลิกที่วันที่ใดก็ได้บนปฏิทิน เพื่อดูรายการทั้งหมดของวันนั้นๆ</li>
+                            <li><b>เพิ่มรายการย้อนหลัง:</b> เมื่อคลิกดูวันที่ คุณสามารถกดปุ่ม "เพิ่มธุรกรรมใหม่" ในหน้าต่างนั้น เพื่อลงบันทึกของวันนั้นได้ทันที</li>
+                            <li><i class="fa-solid fa-image mr-1 text-purple-600"></i><b>ใหม่! ดูรูปใบเสร็จ:</b> ในหน้าสรุปรายวัน จะมีไอคอนใบเสร็จแสดงหากมีการแนบรูปภาพ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mb-6 border-l-4 border-pink-500">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-lightbulb text-pink-500 mr-3"></i> 7. ทริคการใช้งานเพิ่มเติม
+                    </h2>
+                    <ul class="list-disc list-inside space-y-2 text-gray-600 text-lg">
+                        <li><b>การปัดหน้าจอ (Swipe):</b> บนมือถือ คุณสามารถปัดซ้ายหรือขวาที่หน้าจอ เพื่อเปลี่ยนเมนูระหว่าง หน้าแรก - รายการ - ปฏิทิน - ตั้งค่า ได้อย่างรวดเร็ว</li>
+                        <li><b>การค้นหาอัจฉริยะ:</b> ในหน้า "รายการ" ช่องค้นหาสามารถค้นหาได้ทุกอย่าง เช่น ยอดเงิน (500), ชื่อรายการ (ข้าว), หมวดหมู่ (อาหาร) หรือแม้แต่ชื่อบัญชี (KBank)</li>
+                        <li><i class="fa-solid fa-star mr-1 text-yellow-500"></i><b>ใหม่! รายการโปรด:</b> ในฟอร์มบันทึกรายการ คุณสามารถกดปุ่ม **ดาว** เพื่อบันทึกชื่อรายการนั้นเป็นรายการโปรด (Frequent Item) ได้ทันที</li>
+                        <li><i class="fa-solid fa-chart-line mr-1 text-purple-600"></i><b>ใหม่! กราฟแนวโน้ม:</b> ในหน้า "รายการ" คุณสามารถเปลี่ยนโหมดกราฟเป็น **"แนวโน้มรายเดือน/รายปี"** เพื่อดูภาพรวมการเงินในระยะยาวได้</li>
+                        <li><i class="fa-solid fa-table mr-1 text-gray-600"></i><b>ใหม่! จัดกลุ่ม:</b> ในหน้า "รายการ" คุณสามารถเลือก **"จัดกลุ่มรายวัน/รายเดือน"** เพื่อดูผลรวมรายรับ-รายจ่ายเป็นกลุ่มในตารางได้</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div> 
+    </div> 
+    
+    <footer class="text-center p-6 text-gray-600 text-base">
+        © 2025 Finance Manager Pro v7.3.5 | Developed by James IT
+    </footer>
+
+    <div id="form-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-[60]">
+        <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modal-title" class="text-xl font-bold text-purple-600">เพิ่มรายการใหม่</h2>
+                <button id="modal-close-btn" class="text-gray-400 hover:text-red-500 text-4xl w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all absolute top-2 right-2 md:static md:w-auto md:h-auto md:hover:bg-transparent">
+                    &times;
+                </button>
+            </div>
+            
+            <form id="transaction-form" class="space-y-4">
+                <input type="hidden" id="tx-id">
+                <div>
+				<label class="block text-lg text-gray-700 font-medium mb-2">ประเภท</label>
+				
+				<div class="flex flex-row gap-4 items-center">
+					
+					<label class="flex items-center flex-shrink-0">
+						<input type="radio" id="tx-type-income" name="tx-type" value="income" class="form-radio text-green-500 focus:ring-green-500" checked>
+						<span class="ml-2 text-lg text-green-700">รายรับ</span>
+					</label>
+					<label class="flex items-center flex-shrink-0">
+						<input type="radio" id="tx-type-expense" name="tx-type" value="expense" class="form-radio text-red-500 focus:ring-red-500">
+						<span class="ml-2 text-lg text-red-700">รายจ่าย</span>
+					</label>
+					<label class="flex items-center flex-shrink-0">
+						<input type="radio" id="tx-type-transfer" name="tx-type" value="transfer" class="form-radio text-blue-500 focus:ring-blue-500">
+						<span class="ml-2 text-lg text-blue-700">โอนย้าย</span>
+					</label>
+					
+				</div>
+			</div>
+
+                <div id="tx-account-container">
+                    <label for="tx-account" class="block text-lg text-gray-700 font-medium mb-2">บัญชี <span class="text-red-500">*</span></label>
+                    <select id="tx-account" class="w-full form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required>
+                    </select>
+                </div>
+
+                <div id="tx-account-from-container" class="hidden">
+                    <label for="tx-account-from" class="block text-lg text-gray-700 font-medium mb-2">โอนจาก <span class="text-red-500">*</span></label>
+                    <select id="tx-account-from" class="w-full form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required>
+                        </select>
+                </div>
+
+                <div id="tx-account-to-container" class="hidden">
+                    <label for="tx-account-to" class="block text-lg text-gray-700 font-medium mb-2">โอนไป <span class="text-red-500">*</span></label>
+                    <select id="tx-account-to" class="w-full form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required>
+                        </select>
+                </div>
+   
+                <div id="tx-name-container">
+                    <div class="flex justify-between items-center mb-2">
+                        <label for="tx-name" class="block text-lg text-gray-700 font-medium mb-0">ชื่อรายการ <span class="text-red-500">*</span></label>
+                        <div class="flex items-center gap-2">
+                            <button type="button" id="modal-voice-btn" class="text-blue-500 hover:text-blue-700 p-1 rounded-lg" title="พูดเพื่อกรอกข้อมูล">
+                                <i class="fa-solid fa-microphone text-xl"></i>
+                            </button>
+                            <button type="button" id="toggle-favorite-btn" class="text-gray-400 hover:text-yellow-500 p-1 rounded-lg" title="รายการโปรด">
+                                <i class="fa-solid fa-star text-xl"></i>
+                            </button>
+                        </div>
+                        </div>
+                    <input list="frequent-items-datalist" id="tx-name" class="w-full form-input text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required autocomplete="off">
+                    <p id="auto-fill-hint" class="text-xs text-green-600 mt-1 hidden"><i class="fa-solid fa-magic-wand-sparkles"></i> เติมข้อมูลอัตโนมัติแล้ว</p>
+                    <datalist id="frequent-items-datalist">
+                    </datalist>
+                </div>
+
+                <div id="tx-category-container">
+                    <label for="tx-category" class="block text-lg text-gray-700 font-medium mb-2">หมวดหมู่ <span class="text-red-500">*</span></label>
+                    <select id="tx-category" class="w-full form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required>
+                    </select>
+                </div>
+
+                <div class="relative">
+                     <div class="flex justify-between items-center mb-2">
+                        <label for="tx-amount" class="block text-lg text-gray-700 font-medium mb-0">จำนวนเงิน (บาท) <span class="text-red-500">*</span></label>
+                        <button type="button" id="toggle-calc-btn" class="text-purple-600 hover:text-purple-800 p-1 rounded-lg">
+                            <i class="fa-solid fa-calculator text-xl"></i>
+                        </button>
+                    </div>
+                    <input type="text" id="tx-amount" inputmode="decimal" placeholder="0.00 หรือ 50+20" class="w-full form-input text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required>
+                    
+                    <div id="calculator-popover" class="absolute z-20 w-full max-w-xs bg-gray-50 shadow-lg rounded-xl p-3 mt-1 right-0 hidden border border-gray-200">
+                        <div id="calc-preview" class="text-right text-purple-600 font-bold text-xl h-6 mb-2 pr-1"> </div>
+                        <div id="calculator-grid" class="grid grid-cols-4 gap-1">
+                             <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="7">7</button> <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="8">8</button>
+                            <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="9">9</button>
+                             <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="/">/</button>
+                            <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="4">4</button>
+                            <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="5">5</button>
+                             <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="6">6</button>
+                            <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="*">*</button>
+                         <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="1">1</button>
+                            <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="2">2</button>
+                            <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="3">3</button>
+                             <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="-">-</button>
+                            <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="0">0</button>
+                            <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value=".">.</button>
+                            <button type="button" class="calc-btn bg-red-200 hover:bg-red-300 text-red-800 py-1 rounded-lg font-semibold text-base" data-value="C">C</button>
+                            <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="+">+</button>
+                         <button type="button" class="calc-btn col-span-4 bg-purple-600 hover:bg-purple-700 text-white py-1 rounded-lg font-semibold text-base" data-value="=">=</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                   <label for="tx-date" class="block text-lg text-gray-700 font-medium mb-2">วันที่ <span class="text-red-500">*</span></label>
+                    <input type="datetime-local" id="tx-date" class="w-full form-input text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500" required>
+                </div>
+                
+                <div>
+                    <label for="tx-receipt-file" class="block text-lg text-gray-700 font-medium mb-2">แนบรูปภาพ/ใบเสร็จ (ไม่บังคับ)</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="file" id="tx-receipt-file" accept="image/*" class="w-full text-sm text-gray-700
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-purple-50 file:text-purple-700
+                            hover:file:bg-purple-100"
+                        >
+                        <button type="button" id="clear-receipt-btn" class="text-red-500 hover:text-red-700 p-2 hidden">
+                            <i class="fa-solid fa-circle-xmark text-xl"></i>
+                        </button>
+                    </div>
+                    <div id="receipt-preview-container" class="mt-3 hidden">
+                        <img id="receipt-preview" class="max-w-xs max-h-40 rounded-lg shadow-md border border-gray-200 object-cover cursor-pointer hover:shadow-lg transition-shadow" alt="Receipt Preview">
+                    </div>
+                </div>
+                <div>
+                 <label for="tx-desc" class="block text-lg text-gray-700 font-medium mb-2">คำอธิบาย (ไม่บังคับ)</label>
+                    <textarea id="tx-desc" rows="3" class="w-full form-textarea text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-4 pt-4">
+                 <button type="button" id="modal-cancel-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-xl text-lg">ยกเลิก</button> <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-xl shadow-lg text-lg">บันทึก</button> </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="account-form-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-[60]">
+        <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-lg max-h-[90vh] overflow-y-auto relative">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="account-modal-title" class="text-xl font-bold text-purple-600">แก้ไขบัญชี</h2>
+                <button id="account-modal-close-btn" class="text-gray-400 hover:text-red-500 text-4xl w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all absolute top-2 right-2 md:static md:w-auto md:h-auto md:hover:bg-transparent">
+                    &times;
+                </button>
+            </div>
+            <form id="account-form" class="space-y-4">
+                <input type="hidden" id="edit-account-id">
+                <div>
+                    <label for="edit-account-name" class="block text-lg text-gray-700 font-medium mb-2">ชื่อบัญชี</label>
+                    <input type="text" id="edit-account-name" class="w-full form-input text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl" required>
+                </div>
+                <div>
+                    <label for="edit-account-type" class="block text-lg text-gray-700 font-medium mb-2">ประเภทบัญชี</label>
+                    <select id="edit-account-type" class="w-full form-select text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl" required>
+                        <option value="cash">เงินสด/ออมทรัพย์/วอลเล็ท</option>
+                        <option value="credit">บัตรเครดิต</option>
+                        <option value="liability">บัญชีหนี้สิน</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="edit-account-balance" class="block text-lg text-gray-700 font-medium mb-2">ยอดเริ่มต้น (Initial Balance)</label>
+                    
+                    <div class="relative">
+                        <input type="text" id="edit-account-balance" inputmode="decimal" value="0" class="w-full form-input text-lg text-gray-700 bg-gray-50 border border-gray-200 rounded-xl pr-12" required>
+                        <button type="button" id="toggle-edit-account-calc-btn" class="absolute inset-y-0 right-0 flex items-center pr-3 text-purple-600 hover:text-purple-800 p-1 rounded-lg">
+                            <i class="fa-solid fa-calculator text-xl"></i>
+                        </button>
+                        <div id="edit-account-calculator-popover" class="absolute z-20 w-full max-w-xs bg-gray-50 shadow-lg rounded-xl p-3 mt-1 right-0 hidden border border-gray-200">
+                             <div id="edit-acc-calc-preview" class="text-right text-purple-600 font-bold text-xl h-6 mb-2 pr-1"> </div>
+                             <div id="edit-account-calculator-grid" class="grid grid-cols-4 gap-1">
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="7">7</button> <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="8">8</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="9">9</button>
+                                <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="/">/</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="4">4</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="5">5</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="6">6</button>
+                                <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="*">*</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="1">1</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="2">2</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="3">3</button>
+                                <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="-">-</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value="0">0</button>
+                                <button type="button" class="calc-btn bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded-lg font-semibold text-base" data-value=".">.</button>
+                                <button type="button" class="calc-btn bg-red-200 hover:bg-red-300 text-red-800 py-1 rounded-lg font-semibold text-base" data-value="C">C</button>
+                                <button type="button" class="calc-btn bg-purple-200 hover:bg-purple-300 text-purple-800 py-1 rounded-lg font-semibold text-base" data-value="+">+</button>
+                                <button type="button" class="calc-btn col-span-4 bg-purple-600 hover:bg-purple-700 text-white py-1 rounded-lg font-semibold text-base" data-value="=">=</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-500 mt-1">หมายเหตุ: การเปลี่ยนยอดเริ่มต้นจะส่งผลต่อยอดคงเหลือปัจจุบัน</p>
+                </div>
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" id="account-modal-cancel-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-xl text-lg">ยกเลิก</button>
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-xl shadow-lg text-lg">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="account-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+        <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto relative">
+            <div class="flex justify-between items-start md:items-center mb-4 border-b pb-3">
+                <div class="flex flex-col md:flex-row md:items-center justify-between w-full md:gap-4 pr-10 md:pr-0">
+                     <h2 id="account-detail-modal-title" class="text-lg md:text-2xl font-bold text-purple-600 mb-2 md:mb-0">รายการธุรกรรมของบัญชี [ชื่อบัญชี]</h2>
+                     
+                     <button id="add-tx-from-account-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-1.5 px-3 md:py-2 md:px-4 rounded-xl shadow-md text-sm md:text-base transition duration-300 flex items-center gap-2 w-fit">
+                        <i class="fa-solid fa-plus"></i> เพิ่มธุรกรรมใหม่
+                     </button>
+                </div>
+                <button id="account-detail-modal-close-btn" class="text-gray-400 hover:text-red-500 text-4xl w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all absolute top-2 right-2 md:static md:w-auto md:h-auto md:hover:bg-transparent md:ml-4">
+                    &times;
+                </button>
+            </div>
+            <div class="mb-4">
+                <p class="text-base md:text-lg font-medium text-gray-700">ยอดคงเหลือเริ่มต้น: <span id="acc-detail-initial-balance" class="font-bold"></span></p>
+                <p class="text-base md:text-lg font-medium text-gray-700">ยอดคงเหลือปัจจุบัน: <span id="acc-detail-current-balance" class="font-bold"></span></p>
+            </div>
+            <div id="acc-detail-controls-header" class="flex flex-col md:flex-row justify-end items-center mb-4 gap-4">
+                <div class="flex flex-wrap justify-center md:justify-end items-center gap-3 bg-gray-50 p-3 rounded-xl shadow-inner border border-gray-200 w-full md:w-auto">
+                    <select id="acc-detail-view-mode-select" class="form-select text-base text-gray-700 bg-white border-0 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+                        <option value="all">ดูทั้งหมด</option>
+                        <option value="month">ดูรายเดือน</option>
+                        <option value="year">ดูรายปี</option>
+                    </select>
+                    <div id="acc-detail-month-controls" class="flex items-center gap-1 hidden">
+                        <button id="acc-detail-month-prev" class="px-3 py-2 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
+                        <input type="month" id="acc-detail-month-picker" class="form-input text-base text-gray-700 bg-white border-0 rounded-lg focus:ring-purple-500 focus:border-purple-500 w-auto">
+                        <button id="acc-detail-month-next" class="px-3 py-2 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div id="acc-detail-year-controls" class="flex items-center gap-1 hidden">
+                        <button id="acc-detail-year-prev" class="px-3 py-2 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-left"></i></button>
+                        <input type="number" id="acc-detail-year-picker" class="form-input text-base text-gray-700 bg-white border-0 rounded-lg focus:ring-purple-500 focus:border-purple-500 w-24 text-center" placeholder="YYYY">
+                        <button id="acc-detail-year-next" class="px-3 py-2 bg-gray-200 hover:bg-purple-200 rounded-lg"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto no-scrollbar">
+				<table class="w-full text-left table-fixed"> 
+					<thead>
+						<tr class="border-b border-gray-200 bg-gray-100">
+							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[15%] md:w-[12%] align-top">วันที่</th>
+							
+							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[30%] md:w-[33%] align-top">รายการ</th>
+							
+							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[20%] md:w-[20%] text-right align-top">รับ/จ่าย</th>
+							
+							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[20%] md:w-[20%] text-right align-top">คงเหลือ</th>
+
+							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[15%] md:w-[15%] text-center align-top">จัดการ</th>
+						</tr>
+					</thead>
+					<tbody id="account-detail-modal-body">
+						<tr><td colspan="5" class="p-6 text-center text-gray-500">กำลังโหลดรายการ...</td></tr>
+					</tbody>
+				</table>
+			</div>
+        </div>
+    </div>
+    
+    <div id="icon-form-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-[60]">
+        <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-xl max-h-[90vh] overflow-y-auto relative">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h2 class="text-xl font-bold text-purple-600">เลือกไอคอนสำหรับบัญชี <span id="icon-acc-name"></span></h2>
+                <button id="icon-modal-close-btn" class="text-gray-400 hover:text-red-500 text-4xl w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-100 transition-all absolute top-2 right-2 md:static md:w-auto md:h-auto md:hover:bg-transparent">
+                    &times;
+                </button>
+            </div>
+
+            <input type="hidden" id="edit-icon-account-id">
+            
+            <div class="mb-4">
+                <div class="text-lg font-medium text-gray-700 mb-2">ไอคอนปัจจุบัน: <i id="icon-preview" class="fa-solid fa-wallet text-purple-600 text-2xl ml-2"></i></div>
+                <input type="text" id="icon-search" placeholder="ค้นหาไอคอน..." class="w-full form-input text-lg py-3 px-4 text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500">
+            </div>
+
+            <div id="icon-list-container" class="grid grid-cols-6 sm:grid-cols-8 gap-2 max-h-80 overflow-y-auto p-2 bg-gray-50 rounded-xl border border-gray-200">
+                </div>
+
+            <div class="flex justify-end gap-4 pt-4">
+                <button type="button" id="icon-modal-cancel-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-xl text-lg">ยกเลิก</button>
+                <button type="button" id="icon-modal-save-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-6 rounded-xl shadow-lg text-lg">บันทึก</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

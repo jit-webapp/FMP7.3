@@ -1,0 +1,273 @@
+/* =========================================
+   1. GLOBAL & RESET STYLES
+   ========================================= */
+body {
+    font-family: 'Prompt', sans-serif;
+    touch-action: pan-y; /* ป้องกันการเลื่อนหน้าจอแนวขวางในบางอุปกรณ์ */
+}
+
+/* ซ่อนปุ่มลูกศรขึ้นลงใน Input Type Number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* =========================================
+   2. ANIMATIONS & UTILITIES
+   ========================================= */
+.fa-beat {
+    animation: fa-beat 1.5s ease-out infinite;
+}
+
+@keyframes fa-beat {
+    0%, 100% { transform: scale(1); }
+    5%, 15% { transform: scale(0.9); }
+    10%, 20% { transform: scale(1.1); }
+}
+
+/* สีตัวเลขยอดเงิน */
+.balance-negative { color: #ef4444; } /* สีแดง */
+.balance-positive { color: #22c55e; } /* สีเขียว */
+.balance-zero { color: #6b7280; }     /* สีเทา */
+
+/* การ์ดบัญชีขนาดเล็ก (Compact Card) */
+.compact-account-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 100%;
+    min-height: 100px;
+}
+
+/* =========================================
+   3. PAGE TRANSITIONS (SLIDE EFFECT)
+   ========================================= */
+.page-container {
+    overflow-x: hidden;
+    position: relative;
+}
+
+.app-page {
+    width: 100%;
+    min-height: 50vh;
+}
+
+/* ตั้งค่าเริ่มต้นของการเลื่อน */
+.page-transition-enter.slide-left { transform: translateX(100%); }
+.page-transition-enter.slide-right { transform: translateX(-100%); }
+
+.page-transition-enter {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: transform, opacity;
+}
+
+.page-transition-enter-active {
+    transform: translateX(0) !important;
+    opacity: 1 !important;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out;
+}
+
+.page-transition-exit-active {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    will-change: transform, opacity;
+    transition: transform 0.2s ease-in, opacity 0.2s ease-in;
+    z-index: 10;
+}
+
+.page-transition-exit-final.slide-left { transform: translateX(-100%) !important; }
+.page-transition-exit-final.slide-right { transform: translateX(100%) !important; }
+
+/* =========================================
+   4. FULLCALENDAR OVERRIDES
+   ========================================= */
+.fc-scroller {
+    overflow-y: hidden !important;
+}
+
+/* ให้ Calendar ยืดความสูงตามเนื้อหา */
+#calendar-container .fc { 
+    height: auto !important; 
+}
+
+/* =========================================
+   5. DARK MODE STYLES
+   ========================================= */
+body.dark {
+    background-color: #000000; /* สีดำสนิทสำหรับจอ OLED/AMOLED */
+    color: #e5e7eb; /* ตัวหนังสือสีเทาอ่อน */
+}
+
+/* Override Tailwind Backgrounds */
+body.dark .bg-gray-100 {
+    background-color: #000000 !important;
+}
+body.dark .bg-white, 
+body.dark .bg-gray-50 {
+    background-color: #1a1a1a !important; /* สีเทาเข้มสำหรับ Cards/Inputs */
+    color: #e5e7eb;
+}
+
+/* Shadows */
+body.dark .shadow-md,
+body.dark .shadow-lg {
+    box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.05), 0 2px 4px -2px rgba(255, 255, 255, 0.05);
+}
+
+/* Text Colors Overrides */
+body.dark .text-gray-700,
+body.dark .text-gray-800,
+body.dark .text-gray-900 {
+    color: #e5e7eb !important;
+}
+body.dark .text-gray-600 {
+    color: #9ca3af !important;
+}
+body.dark .text-gray-500 {
+    color: #6b7280 !important;
+}
+
+/* Borders & Hover States */
+body.dark .border-gray-100,
+body.dark .border-gray-200 {
+    border-color: #374151 !important;
+}
+body.dark .hover\:bg-gray-50:hover {
+    background-color: #374151 !important;
+}
+
+/* Form Inputs */
+body.dark .form-input,
+body.dark .form-select,
+body.dark .form-textarea {
+    background-color: #1a1a1a !important;
+    border-color: #374151 !important;
+    color: #e5e7eb;
+}
+body.dark .form-input:focus, 
+body.dark .form-select:focus, 
+body.dark .form-textarea:focus {
+    box-shadow: 0 0 0 0.2rem rgba(167, 139, 250, 0.5);
+}
+
+/* Specific Color Overrides (ปรับสีพื้นหลังให้อ่อนลงเมื่ออยู่ในโหมดมืด) */
+body.dark .bg-green-100 { background-color: #102e21 !important; }
+body.dark .text-green-800 { color: #34d399 !important; }
+body.dark .text-green-700 { color: #10b981 !important; }
+
+body.dark .bg-red-100 { background-color: #36171d !important; }
+body.dark .text-red-800 { color: #f87171 !important; }
+body.dark .text-red-700 { color: #ef4444 !important; }
+
+body.dark .bg-blue-100 { background-color: #162438 !important; }
+body.dark .text-blue-800 { color: #60a5fa !important; }
+
+body.dark .bg-purple-100 { background-color: #2a1f49 !important; }
+body.dark .text-purple-600 { color: #a78bfa !important; }
+body.dark .text-purple-700 { color: #c4b5fd !important; }
+body.dark .text-purple-800 { color: #d8b4fe !important; }
+
+body.dark .bg-gray-200 { background-color: #374151 !important; }
+body.dark .hover\:bg-purple-100:hover { background-color: #4c377a !important; }
+body.dark .bg-purple-50 { background-color: #2a1f49 !important; }
+body.dark .border-purple-100 { border-color: #4c377a !important; }
+
+body.dark .balance-zero { color: #9ca3af !important; } 
+
+/* --- Dark Mode for FullCalendar --- */
+body.dark .fc {
+    --fc-bg-event-color: #4c377a;
+    --fc-event-border-color: #a78bfa;
+    --fc-event-text-color: #e5e7eb;
+    --fc-today-bg-color: #1f2937;
+    --fc-border-color: #374151;
+    --fc-list-event-hover-bg: #1f2937;
+}
+
+body.dark .fc .fc-toolbar-title,
+body.dark .fc-daygrid-body {
+    color: #e5e7eb !important;
+}
+body.dark .fc-col-header-cell,
+body.dark .fc-daygrid-week-number,
+body.dark .fc-daygrid-day-number {
+    background-color: #1a1a1a !important;
+    border-color: #374151 !important;
+    color: #e5e7eb !important;
+}
+body.dark .fc-daygrid-day {
+    background-color: #1a1a1a !important;
+}
+body.dark .fc-day-other .fc-daygrid-day-number {
+    color: #6b7280 !important;
+}
+body.dark .fc-button {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    color: #e5e7eb !important;
+}
+body.dark .fc-button:hover {
+    background-color: #4b5563 !important;
+}
+body.dark .hover\:bg-purple-50:hover {
+    background-color: #374151 !important;
+}
+
+/* --- Dark Mode for SweetAlert2 --- */
+body.dark .swal2-popup {
+    background-color: #1a1a1a !important; 
+    border: 1px solid #374151;
+}
+
+body.dark .swal2-title,
+body.dark .swal2-html-container {
+    color: #e5e7eb !important;
+}
+
+body.dark .swal2-actions button {
+    font-family: 'Prompt', sans-serif !important;
+}
+body.dark .swal2-confirm {
+    background-color: #a78bfa !important;
+    color: #1a1a1a !important;
+}
+body.dark .swal2-confirm:hover {
+    background-color: #c4b5fd !important;
+}
+body.dark .swal2-cancel {
+    background-color: #374151 !important;
+    color: #e5e7eb !important;
+}
+body.dark .swal2-cancel:hover {
+    background-color: #4b5563 !important;
+}
+
+body.dark .swal2-input,
+body.dark .swal2-textarea {
+    background-color: #000000 !important;
+    border-color: #374151 !important;
+    color: #e5e7eb !important;
+}
+
+body.dark .swal2-close {
+    color: #9ca3af !important;
+}
+
+/* Toast Notification Dark Mode */
+body.dark .swal2-toast {
+    background-color: #1a1a1a !important;
+    border: 1px solid #374151;
+}
+body.dark .swal2-toast .swal2-title {
+    color: #e5e7eb !important;
+}
