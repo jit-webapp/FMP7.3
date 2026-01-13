@@ -285,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastRedoAction = null;
     
     let currentReceiptBase64 = null; 
-	const MAX_FILE_SIZE_MB = 10;
+	const MAX_FILE_SIZE_MB = 100;
 	
 	// --- เพิ่ม: ค่ากำหนดการบีบอัด
     const COMPRESS_MAX_WIDTH = 1024; // ความกว้างหรือสูงสูงสุด (pixel) - 1024px ชัดพอสำหรับใบเสร็จ
