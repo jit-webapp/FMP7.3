@@ -35,10 +35,10 @@
                 <form id="unlock-form" class="space-y-4">
                     <div class="relative">
                         <input type="password" id="unlock-password" placeholder="รหัสผ่าน" class="w-full text-center text-2xl tracking-widest py-3 px-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-purple-200 focus:border-purple-500 outline-none transition-all" required
-						autocapitalize="off" 
-						autocomplete="off" 
-						autocorrect="off" 
-						spellcheck="false">
+                        autocapitalize="off" 
+                        autocomplete="off" 
+                        autocorrect="off" 
+                        spellcheck="false">
                     </div>
                     <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition duration-300 text-lg flex items-center justify-center gap-2">
                         <i class="fa-solid fa-door-open"></i> เข้าสู่ระบบ
@@ -271,35 +271,35 @@
 
             <div id="page-settings" class="app-page hidden">
                 <h1 class="text-xl font-bold text-purple-600 mb-6">ตั้งค่า</h1>
-				
-				<div class="setting-group" style="margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-					<h3 style="margin-top: 0; color: #333; font-size: 16px; margin-bottom: 10px;">
-						<i class="fas fa-cloud"></i> บัญชีผู้ใช้ (Cloud Sync)
-					</h3>
-					
-					<div id="auth-container" style="display: flex; justify-content: space-between; align-items: center;">
-						<div style="display: flex; align-items: center;">
-							<div id="user-avatar" style="width: 40px; height: 40px; background-color: #ddd; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center;">
-								<i class="fas fa-user" style="color: #666;"></i>
-							</div>
-							<div>
-								<span id="user-name-display" style="font-weight: bold; color: #333; display: block;">Guest (Offline)</span>
-								<span id="user-status" style="font-size: 12px; color: #888;">ข้อมูลเก็บในเครื่องนี้เท่านั้น</span>
-							</div>
-						</div>
+                
+                <div class="setting-group" style="margin-bottom: 20px; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                    <h3 style="margin-top: 0; color: #333; font-size: 16px; margin-bottom: 10px;">
+                        <i class="fas fa-cloud"></i> บัญชีผู้ใช้ (Cloud Sync)
+                    </h3>
+                    
+                    <div id="auth-container" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center;">
+                            <div id="user-avatar" style="width: 40px; height: 40px; background-color: #ddd; border-radius: 50%; margin-right: 10px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user" style="color: #666;"></i>
+                            </div>
+                            <div>
+                                <span id="user-name-display" style="font-weight: bold; color: #333; display: block;">Guest (Offline)</span>
+                                <span id="user-status" style="font-size: 12px; color: #888;">ข้อมูลเก็บในเครื่องนี้เท่านั้น</span>
+                            </div>
+                        </div>
 
-						<div>
-							<button id="btn-login" onclick="window.loginWithGoogle()" style="background-color: #4285F4; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
-								<i class="fab fa-google"></i> เข้าสู่ระบบ
-							</button>
+                        <div>
+                            <button id="btn-login" onclick="window.loginWithGoogle()" style="background-color: #4285F4; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: 5px;">
+                                <i class="fab fa-google"></i> เข้าสู่ระบบ
+                            </button>
 
-							<button id="btn-logout" onclick="window.logout()" style="display: none; background-color: #ffebee; color: #d32f2f; border: 1px solid #ffcdd2; padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer;">
-								ออกจากระบบ
-							</button>
-						</div>
-					</div>
-				</div>
-				
+                            <button id="btn-logout" onclick="window.logout()" style="display: none; background-color: #ffebee; color: #d32f2f; border: 1px solid #ffcdd2; padding: 6px 12px; border-radius: 20px; font-size: 13px; cursor: pointer;">
+                               ออกจากระบบ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
                     <div class="flex flex-col gap-6">
                         <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg">
@@ -409,19 +409,19 @@
                         
                         <div class="bg-white p-5 md:p-6 rounded-xl shadow-lg mt-0">
                             <h2 class="text-xl font-bold text-purple-600 mb-4">ตั้งค่าทั่วไป</h2>
-                            								<div class="flex items-center justify-between mt-5"> <div class="flex items-center gap-3">
-										<div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
-											<i class="fa-solid fa-wand-magic-sparkles"></i>
-										</div>
-										<span class="text-lg text-gray-700 font-medium">ยืนยันรหัสผ่านอัตโนมัติ</span>
-									</div>
-									
-									<label class="relative inline-flex items-center cursor-pointer">
-										<input type="checkbox" id="toggle-auto-confirm-password" class="sr-only peer">
-										<div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-purple-600"></div>
-									</label>
-								</div>
-								<p class="text-sm text-gray-500 mt-2 ml-14">ตรวจสอบและยืนยันทันทีเมื่อพิมพ์รหัสผ่านถูกต้อง</p>
+                                                            <div class="flex items-center justify-between mt-5"> <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        </div>
+                                        <span class="text-lg text-gray-700 font-medium">ยืนยันรหัสผ่านอัตโนมัติ</span>
+                                    </div>
+                                    
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" id="toggle-auto-confirm-password" class="sr-only peer">
+                                        <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-2 ml-14">ตรวจสอบและยืนยันทันทีเมื่อพิมพ์รหัสผ่านถูกต้อง</p>
                             <div class="mb-5 border-b pb-4">
                                 <div class="flex items-center justify-between mb-2">
                                     <div class="flex items-center gap-3">
@@ -433,7 +433,7 @@
                                     
                                     <select id="auto-lock-select" class="form-select text-base text-gray-700 bg-gray-50 border border-gray-200 rounded-xl focus:ring-purple-500 focus:border-purple-500 py-2 px-3">
                                         <option value="0">ปิด</option>
-										<option value="1">1 นาที</option>
+                                        <option value="1">1 นาที</option>
                                         <option value="5">5 นาที</option>
                                         <option value="10">10 นาที</option>
                                         <option value="30">30 นาที</option>
@@ -503,7 +503,7 @@
                 </div>
             </div>
         
-            <<div id="page-guide" class="app-page hidden pb-20">
+            <div id="page-guide" class="app-page hidden pb-20">
                 
                 <div class="text-center mb-8">
                     <h1 class="text-2xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 leading-tight py-2">
@@ -801,12 +801,12 @@
                     </section>
 
                 </div> 
-			</div>
+            </div>
         </div> 
     </div> 
     
     <footer class="text-center p-6 text-gray-600 text-base">
-        © 2025 Finance Manager Pro v7.3.5 | Developed by James IT
+        © 2025 Finance Manager Pro v7.4 Cloud | Developed by James IT
     </footer>
 
     <div id="form-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-[60]">
@@ -821,25 +821,25 @@
             <form id="transaction-form" class="space-y-4">
                 <input type="hidden" id="tx-id">
                 <div>
-				<label class="block text-lg text-gray-700 font-medium mb-2">ประเภท</label>
-				
-				<div class="flex flex-row gap-4 items-center">
-					
-					<label class="flex items-center flex-shrink-0">
-						<input type="radio" id="tx-type-income" name="tx-type" value="income" class="form-radio text-green-500 focus:ring-green-500" checked>
-						<span class="ml-2 text-lg text-green-700">รายรับ</span>
-					</label>
-					<label class="flex items-center flex-shrink-0">
-						<input type="radio" id="tx-type-expense" name="tx-type" value="expense" class="form-radio text-red-500 focus:ring-red-500">
-						<span class="ml-2 text-lg text-red-700">รายจ่าย</span>
-					</label>
-					<label class="flex items-center flex-shrink-0">
-						<input type="radio" id="tx-type-transfer" name="tx-type" value="transfer" class="form-radio text-blue-500 focus:ring-blue-500">
-						<span class="ml-2 text-lg text-blue-700">โอนย้าย</span>
-					</label>
-					
-				</div>
-			</div>
+                <label class="block text-lg text-gray-700 font-medium mb-2">ประเภท</label>
+                
+                <div class="flex flex-row gap-4 items-center">
+                    
+                    <label class="flex items-center flex-shrink-0">
+                        <input type="radio" id="tx-type-income" name="tx-type" value="income" class="form-radio text-green-500 focus:ring-green-500" checked>
+                        <span class="ml-2 text-lg text-green-700">รายรับ</span>
+                    </label>
+                    <label class="flex items-center flex-shrink-0">
+                        <input type="radio" id="tx-type-expense" name="tx-type" value="expense" class="form-radio text-red-500 focus:ring-red-500">
+                        <span class="ml-2 text-lg text-red-700">รายจ่าย</span>
+                    </label>
+                    <label class="flex items-center flex-shrink-0">
+                        <input type="radio" id="tx-type-transfer" name="tx-type" value="transfer" class="form-radio text-blue-500 focus:ring-blue-500">
+                        <span class="ml-2 text-lg text-blue-700">โอนย้าย</span>
+                    </label>
+                    
+                </div>
+            </div>
 
                 <div id="tx-account-container">
                     <label for="tx-account" class="block text-lg text-gray-700 font-medium mb-2">บัญชี <span class="text-red-500">*</span></label>
@@ -1050,25 +1050,25 @@
                 </div>
             </div>
             <div class="overflow-x-auto no-scrollbar">
-				<table class="w-full text-left table-fixed"> 
-					<thead>
-						<tr class="border-b border-gray-200 bg-gray-100">
-							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[15%] md:w-[12%] align-top">วันที่</th>
-							
-							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[30%] md:w-[33%] align-top">รายการ</th>
-							
-							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[20%] md:w-[20%] text-right align-top">รับ/จ่าย</th>
-							
-							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[20%] md:w-[20%] text-right align-top">คงเหลือ</th>
+                <table class="w-full text-left table-fixed"> 
+                    <thead>
+                        <tr class="border-b border-gray-200 bg-gray-100">
+                            <th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[15%] md:w-[12%] align-top">วันที่</th>
+                            
+                            <th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[30%] md:w-[33%] align-top">รายการ</th>
+                            
+                            <th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[20%] md:w-[20%] text-right align-top">รับ/จ่าย</th>
+                            
+                            <th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[20%] md:w-[20%] text-right align-top">คงเหลือ</th>
 
-							<th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[15%] md:w-[15%] text-center align-top">จัดการ</th>
-						</tr>
-					</thead>
-					<tbody id="account-detail-modal-body">
-						<tr><td colspan="5" class="p-6 text-center text-gray-500">กำลังโหลดรายการ...</td></tr>
-					</tbody>
-				</table>
-			</div>
+                            <th class="p-2 text-base md:text-lg text-gray-900 font-bold w-[15%] md:w-[15%] text-center align-top">จัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="account-detail-modal-body">
+                        <tr><td colspan="5" class="p-6 text-center text-gray-500">กำลังโหลดรายการ...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     
@@ -1097,148 +1097,109 @@
             </div>
         </div>
     </div>
-		<script type="module">
-		  // 1. Import Library ที่จำเป็น (App, Auth, Firestore)
-		  // หมายเหตุ: ใช้ version เดียวกับที่คุณส่งมา (ถ้ามีปัญหาให้เปลี่ยน 12.7.0 เป็น 10.7.1)
-		  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-		  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-		  import { 
-			getAuth, 
-			GoogleAuthProvider, 
-			signInWithPopup, 
-			signOut, 
-			onAuthStateChanged 
-		  } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-		  import { 
-			getFirestore, 
-			collection, 
-			addDoc, 
-			query, 
-			where, 
-			onSnapshot, 
-			orderBy, 
-			doc, 
-			deleteDoc, 
-			updateDoc 
-		  } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-		  // 2. Config ของคุณ (James IT)
-		  const firebaseConfig = {
-			apiKey: "AIzaSyBU9M5C5Q6yIdlvjEQsUpxcYOjHKV_JRc4",
-			authDomain: "fmpro-d66c3.firebaseapp.com",
-			projectId: "fmpro-d66c3",
-			storageBucket: "fmpro-d66c3.firebasestorage.app",
-			messagingSenderId: "1046027421115",
-			appId: "1:1046027421115:web:333a51f45fbf09c556309e",
-			measurementId: "G-KGGDYWYGNM"
-		  };
+    <script type="module">
+        // 1. Import Library
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, doc, deleteDoc, updateDoc, query, where, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-		  // 3. Initialize Firebase
-		  const app = initializeApp(firebaseConfig);
-		  const analytics = getAnalytics(app);
-		  const auth = getAuth(app);
-		  const db = getFirestore(app);
-		  const provider = new GoogleAuthProvider();
+        // 2. Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBU9M5C5Q6yIdlvjEQsUpxcYOjHKV_JRc4",
+            authDomain: "fmpro-d66c3.firebaseapp.com",
+            projectId: "fmpro-d66c3",
+            storageBucket: "fmpro-d66c3.firebasestorage.app",
+            messagingSenderId: "1046027421115",
+            appId: "1:1046027421115:web:333a51f45fbf09c556309e",
+            measurementId: "G-KGGDYWYGNM"
+        };
 
-		  // 4. ทำให้ฟังก์ชันและตัวแปรใช้งานได้ทั่วทั้งเว็บ (Global Scope)
-		  // เพื่อให้ไฟล์ app.js หรือ script อื่นๆ เรียกใช้ได้
-		  window.db = db;
-		  window.auth = auth;
-		  window.dbCollection = collection; // สำหรับอ้างอิง Collection
-		  window.dbAddDoc = addDoc;         // สำหรับเพิ่มข้อมูล
-		  window.dbDoc = doc;               // สำหรับอ้างอิงเอกสาร
-		  window.dbDelete = deleteDoc;      // สำหรับลบ
-		  window.dbUpdate = updateDoc;      // สำหรับแก้ไข
-		  
-		  // --- ฟังก์ชัน Login ด้วย Google ---
-		  window.loginWithGoogle = () => {
-			signInWithPopup(auth, provider)
-			  .then((result) => {
-				const user = result.user;
-				console.log("Logged in as: " + user.displayName);
-				// เดี๋ยวเราจะเขียนฟังก์ชัน loadDataFromCloud() ในขั้นตอนต่อไป
-				alert("ยินดีต้อนรับ: " + user.displayName);
-			  }).catch((error) => {
-				console.error("Login Failed:", error);
-				alert("เข้าสู่ระบบไม่สำเร็จ: " + error.message);
-			  });
-		  };
+        // 3. Initialize
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
-		  // --- ฟังก์ชัน Logout ---
-		  window.logout = () => {
-			signOut(auth).then(() => {
-			  console.log("Logged out");
-			  alert("ออกจากระบบแล้ว");
-			  // รีโหลดหน้าเว็บเพื่อให้กลับไปใช้โหมด Offline หรือเคลียร์หน้าจอ
-			  location.reload();
-			}).catch((error) => {
-			  console.error("Logout Error:", error);
-			});
-		  };
+        // 4. Export to Window (เพื่อให้ไฟล์ script.js มองเห็น)
+        window.db = db;
+        window.auth = auth;
+        window.dbCollection = collection;
+        window.dbAddDoc = addDoc;
+        window.dbDoc = doc;
+        window.dbDelete = deleteDoc;
+        window.dbUpdate = updateDoc;
+        // Export ฟังก์ชัน Query เพิ่มเติม (เผื่อใช้ loadData)
+        window.dbQuery = query;
+        window.dbWhere = where;
+        window.dbOrderBy = orderBy;
+        window.dbOnSnapshot = onSnapshot;
 
-		  // --- ตัวตรวจจับสถานะ (User State Listener) ---
-		  onAuthStateChanged(auth, (user) => {
-			if (user) {
-			  // User ล็อกอินอยู่
-			  document.getElementById('btn-login').style.display = 'none';
-			  document.getElementById('btn-logout').style.display = 'inline-block';
-			  document.getElementById('user-name-display').innerText = user.displayName;
-			  
-			  // TODO: ตรงนี้เดี๋ยวเราจะเรียกฟังก์ชันโหลดข้อมูลจาก Cloud
-			  // loadTransactionsFromCloud(user.uid);
-			  
-			} else {
-			  // User ไม่ได้ล็อกอิน
-			  document.getElementById('btn-login').style.display = 'inline-block';
-			  document.getElementById('btn-logout').style.display = 'none';
-			  document.getElementById('user-name-display').innerText = '';
-			}
-		  });
-		</script>
-		
-		// ... (ในส่วน script type="module") ...
+        // --- ฟังก์ชัน Login ---
+        window.loginWithGoogle = () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    console.log("Logged in:", result.user.displayName);
+                    // ไม่ต้อง alert ก็ได้ เพราะเดี๋ยว UI จะเปลี่ยนเอง
+                }).catch((error) => {
+                    console.error("Login Error:", error);
+                    alert("เกิดข้อผิดพลาด: " + error.message);
+                });
+        };
 
-		onAuthStateChanged(auth, (user) => {
-			const nameDisplay = document.getElementById('user-name-display');
-			const statusDisplay = document.getElementById('user-status');
-			const avatar = document.getElementById('user-avatar');
-			const btnLogin = document.getElementById('btn-login');
-			const btnLogout = document.getElementById('btn-logout');
+        // --- ฟังก์ชัน Logout ---
+        window.logout = () => {
+            signOut(auth).then(() => {
+                console.log("Logged out");
+                location.reload(); // รีโหลดเพื่อเคลียร์ข้อมูล
+            });
+        };
 
-			if (user) {
-				// === กรณี Login แล้ว ===
-				console.log("User:", user);
-				
-				// 1. เปลี่ยนชื่อ
-				nameDisplay.innerText = user.displayName;
-				statusDisplay.innerText = "ซิงค์ข้อมูลกับ Cloud แล้ว";
-				statusDisplay.style.color = "#28a745"; // สีเขียว
-				
-				// 2. เปลี่ยนรูปโปรไฟล์ (ถ้ามี)
-				if(user.photoURL) {
-					avatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%;">`;
-				}
+        // --- ตัวตรวจจับสถานะ (User State Listener) ---
+        // รวม logic การเปลี่ยน UI ไว้ที่นี่ที่เดียว
+        onAuthStateChanged(auth, (user) => {
+            // อ้างอิง Element ในหน้า Settings
+            const nameDisplay = document.getElementById('user-name-display');
+            const statusDisplay = document.getElementById('user-status');
+            const avatar = document.getElementById('user-avatar');
+            const btnLogin = document.getElementById('btn-login');
+            const btnLogout = document.getElementById('btn-logout');
 
-				// 3. สลับปุ่ม
-				btnLogin.style.display = 'none';
-				btnLogout.style.display = 'inline-block';
-				
-				// TODO: เรียกฟังก์ชันโหลดข้อมูลจาก Cloud ตรงนี้
-				// loadTransactionsFromCloud(user.uid);
+            // ตรวจสอบว่า Element มีอยู่จริงไหม (กัน Error หน้าอื่น)
+            if (!nameDisplay || !btnLogin) return;
 
-			} else {
-				// === กรณี Offline ===
-				nameDisplay.innerText = "Guest (Offline)";
-				statusDisplay.innerText = "ข้อมูลเก็บในเครื่องนี้เท่านั้น";
-				statusDisplay.style.color = "#888";
-				
-				avatar.innerHTML = `<i class="fas fa-user" style="color: #666;"></i>`;
+            if (user) {
+                // === กรณี Login แล้ว ===
+                nameDisplay.innerText = user.displayName;
+                statusDisplay.innerText = "ซิงค์ข้อมูลกับ Cloud แล้ว";
+                statusDisplay.style.color = "#28a745"; // สีเขียว
+                
+                if(user.photoURL) {
+                    avatar.innerHTML = `<img src="${user.photoURL}" style="width:100%; height:100%; border-radius:50%;">`;
+                }
 
-				btnLogin.style.display = 'inline-flex'; // ใช้ inline-flex เพื่อให้ icon กับ text เรียงสวย
-				btnLogout.style.display = 'none';
-			}
-		});
-		
+                btnLogin.style.display = 'none';
+                btnLogout.style.display = 'inline-flex';
+                
+                // แจ้งเตือนไฟล์ script.js ว่าพร้อมโหลดข้อมูลแล้ว (ถ้าจำเป็น)
+                if (typeof window.loadDataFromCloud === 'function') {
+                    window.loadDataFromCloud(user.uid);
+                }
+
+            } else {
+                // === กรณี Offline ===
+                nameDisplay.innerText = "Guest (Offline)";
+                statusDisplay.innerText = "ข้อมูลเก็บในเครื่องนี้เท่านั้น";
+                statusDisplay.style.color = "#888";
+                
+                avatar.innerHTML = `<i class="fas fa-user" style="color: #666;"></i>`;
+
+                btnLogin.style.display = 'inline-flex';
+                btnLogout.style.display = 'none';
+            }
+        });
+    </script>
+
     <script src="script.js"></script>
 </body>
 </html>

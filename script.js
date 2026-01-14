@@ -4205,7 +4205,7 @@ function showDailyDetails(date) {
                 const d = now.getDate().toString().padStart(2, '0');
                 const h = now.getHours().toString().padStart(2, '0');
                 const min = now.getMinutes().toString().padStart(2, '0');
-                const exportFileDefaultName = `backup_v7.3_${y}-${m}-${d}_${h}${min}.json`;
+                const exportFileDefaultName = `backup_v7.4_${y}-${m}-${d}_${h}${min}.json`;
                 
                 const linkElement = document.createElement('a');
                 linkElement.setAttribute('href', dataUri);
